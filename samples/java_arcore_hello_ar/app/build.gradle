@@ -3,7 +3,16 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-
+    signingConfigs {
+        release {
+            if (project.properties['keyStore.release.storeFile'] != null) {
+                storeFile file(project.properties['keyStore.release.storeFile'])
+                storePassword project.properties['keyStore.release.storePassword']
+                keyAlias project.properties['keyStore.release.keyAlias']
+                keyPassword project.properties['keyStore.release.keyPassword']
+            }
+        }
+    }
     defaultConfig {
         applicationId "com.google.ar.core.examples.java.helloar"
         minSdkVersion 24
@@ -15,6 +24,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
 
         lintOptions {
