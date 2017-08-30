@@ -16,6 +16,18 @@
 
 package com.google.ar.core.examples.java.helloar;
 
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
 import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Frame.TrackingState;
@@ -29,18 +41,6 @@ import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer.BlendMo
 import com.google.ar.core.examples.java.helloar.rendering.PlaneAttachment;
 import com.google.ar.core.examples.java.helloar.rendering.PlaneRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.PointCloudRenderer;
-
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ReflectUtil.ensureSupportARCore();
         setContentView(R.layout.activity_main);
         mSurfaceView = (GLSurfaceView) findViewById(R.id.surfaceview);
 
@@ -154,7 +155,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
             Toast.makeText(this,
-                "Camera permission is needed to run this application", Toast.LENGTH_LONG).show();
+                    "Camera permission is needed to run this application", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -165,12 +166,12 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         if (hasFocus) {
             // Standard Android full-screen functionality.
             getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
@@ -194,7 +195,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
             mVirtualObject.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
 
             mVirtualObjectShadow.createOnGlThread(/*context=*/this,
-                "andy_shadow.obj", "andy_shadow.png");
+                    "andy_shadow.obj", "andy_shadow.png");
             mVirtualObjectShadow.setBlendMode(BlendMode.Shadow);
             mVirtualObjectShadow.setMaterialProperties(1.0f, 0.0f, 0.0f, 1.0f);
         } catch (IOException e) {
@@ -244,8 +245,8 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
                         // space. This anchor will be used in PlaneAttachment to place the 3d model
                         // in the correct position relative both to the world and to the plane.
                         mTouches.add(new PlaneAttachment(
-                            ((PlaneHitResult) hit).getPlane(),
-                            mSession.addAnchor(hit.getHitPose())));
+                                ((PlaneHitResult) hit).getPlane(),
+                                mSession.addAnchor(hit.getHitPose())));
 
                         // Hits are sorted by depth. Consider only closest hit on a plane.
                         break;
@@ -319,8 +320,8 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
             @Override
             public void run() {
                 mLoadingMessageSnackbar = Snackbar.make(
-                    HelloArActivity.this.findViewById(android.R.id.content),
-                    "Searching for surfaces...", Snackbar.LENGTH_INDEFINITE);
+                        HelloArActivity.this.findViewById(android.R.id.content),
+                        "Searching for surfaces...", Snackbar.LENGTH_INDEFINITE);
                 mLoadingMessageSnackbar.getView().setBackgroundColor(0xbf323232);
                 mLoadingMessageSnackbar.show();
             }
